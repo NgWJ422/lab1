@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const express = require('express')
 const app = express()
 const port = 3000
@@ -54,33 +55,40 @@ app.post('/', (req, res) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-
-app.post('/login',(req,res) =>{
+app.post('/login',async(req,res) =>{
   const{username, password}=req.body;
 
   const user = dbuser.find(user => user.username === username && user.password === password);
 
-  if(user){
-    res.send(user);
-  }else{
+  if(!user){
     res.send({error:"user not found"});
   }
+  const isvalid = await bcrypt.compare(password,dbuser.password)
+  if(!isvalid){
+    res.send("wrong password")
+  }
+
+  res.send('ok')
 })
 
-app.post('/register',(req,res)=>{
-  let data=req.body
-  res.send(
-    register(
-      data.username,
-      data.password,
-      data.name,
-      data.email
-    )
-  );
+app.post('/register',async(req,res)=>{
+  const{newusername,newpassword,newname,newemail}=req.body
+  const hash = await bcrypt.hash(newpassword,10)
+  let matched = dbuser.find(Element=>
+    Element.username == newusername
+)
+if(matched){
+    return "username was used"
+}else{
+dbuser.push({
+    username: newusername,
+    password: hash,
+    name: newname,
+    email: newemail
+})
+console.log(dbuser)
+  res.send("ok")
+}
 });
 
 app.post('/bye', (req, res) => {
@@ -93,40 +101,4 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-function login(username,password){
-  console.log("someone try to login with",username,password)
-  let matched = dbuser.find(Element=>
-      Element.username == username
-  )
-  if(matched){
-      if(matched.password == password ) {
-          return matched
-      } else {
-          return "Password not matched"
-      }
-  } else {
-      return "username not found"
-  }
-}
 
-function register(newusername,newpassword,newname,newemail){
-  let matched = dbuser.find(Element=>
-      Element.username == newusername
-  )
-  if(matched){
-      return "username was used"
-  }else{
-
-
-  dbuser.push({
-      username: newusername,
-      password: newpassword,
-      name: newname,
-      email: newemail
-  })
-  console.log("account has been created")
-  
-
-  
-}
-}

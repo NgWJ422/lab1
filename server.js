@@ -35,8 +35,8 @@ app.post('/login',async(req,res) =>{
     res.send("wrong password")
     return
   }
-  console.log(user)
-  res.send('login success')
+  //console.log(user)
+  res.send(user)
 })
 
 app.post('/register',async(req,res)=>{
@@ -64,5 +64,3 @@ console.log(dbuser)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
-

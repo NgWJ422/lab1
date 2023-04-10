@@ -17,3 +17,25 @@ Content-Type: application/json
     "newname": "uuuu",
     "newemail":"user@m.com"
 }
+
+###
+
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "newusername": "user2",
+    "newpassword": "passwoiruruu",
+    "newname": "yergfgfg",
+    "newemail":"uryryryy@m.com"
+}
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "user2",
+    "password": "password1"
+}

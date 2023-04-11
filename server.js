@@ -63,57 +63,28 @@ app.post('/login',(req,res) =>{
     res.send(user)
   })
 
-app.post('/register',(req,res)=>{
-  let data=req.body
-  res.send(
-    register(
-      data.username,
-      data.password,
-      data.name,
-      data.email
-    )
-  );
-});
-
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-
-function login(username,password){
-  console.log("someone try to login with",username,password)
-  let matched = dbuser.find(Element=>
-      Element.username == username
-  )
-  if(matched){
-      if(matched.password == password ) {
-          return matched
-      } else {
-          return "Password not matched"
-      }
-  } else {
-      return "username not found"
-  }
-}
-
-function register(newusername,newpassword,newname,newemail){
-  let matched = dbuser.find(Element=>
+  app.post('/register',(req,res)=>{
+    const{newusername,newpassword,newname,newemail}=req.body
+    let matched = dbuser.find(Element=>
       Element.username == newusername
   )
   if(matched){
-      return "username was used"
+      res.send("username was used")
   }else{
-
-
   dbuser.push({
       username: newusername,
       password: newpassword,
       name: newname,
       email: newemail
   })
-  console.log("account has been created")
+  console.log(dbuser)
+    res.send("registered")
+  }
+  });
+  
 
 
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
-}
-}
